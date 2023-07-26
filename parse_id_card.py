@@ -38,7 +38,7 @@ province_list = {
 }
 
 
-def parse_id_card(x: str):
+def get_id_info(x: str):
     """
     Parses an Indonesian ID card number and returns a list of its components.
 
@@ -84,6 +84,16 @@ def parse_id_card(x: str):
 
 
 if __name__ == '__main__':
-    id_card_number = input("Enter an Indonesian ID card number: ")
-    parsed_id_card = parse_id_card(id_card_number)
-    print(parsed_id_card)
+    while True:
+        id_card_number = input("Enter an Indonesian ID card number (16 digits): ")
+        if len(id_card_number) != 16:
+            print("Invalid input. Please enter a 16-digit ID card number.")
+            continue
+        parsed_id_card = get_id_info(id_card_number)
+        if None in parsed_id_card:
+            print("Invalid ID card number. Please enter a valid 16-digit ID card number.")
+            continue
+        age = parsed_id_card[-1]
+        gender = parsed_id_card[3]        
+        print(f'Age: {age}, Gender: {gender}')
+        break

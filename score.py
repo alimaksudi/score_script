@@ -1,20 +1,4 @@
-def parse_nik(x):
-    if len(x)==16:
-        nik_province = x[:2]
-        nik_city = x[:4]
-        nik_district = x[:6]
-        if int(x[6:8])>31:
-            nik_gender = 'FEMALE'
-        else:
-            nik_gender = 'MALE'
-        
-        if int(x[-6])==0 or int(x[-6])==1:
-            nik_birthyear = int('20'+x[-6:-4])
-        else:
-            nik_birthyear = int('19'+x[-6:-4])
-        return [nik_province,nik_city,nik_district,nik_gender,nik_birthyear]
-    else:
-        return [None,None,None,None,None]
+from parse_id_card import get_id_info
 
 # This dictionary contains the scores for different genders.
 gender_scores = {
@@ -45,28 +29,22 @@ marital_status_scores = {
     'unknown': -5
 }
 
-# This dictionary contains the scores for whether the customer has NPWP or not.
-has_npwp_scores = {
-    'yes': 6,
-    'no': 2
-}
-
 # This dictionary contains the scores for different income to debt ratios.
-income_todebt_ratio_scores = {
-    (0, 4.0): -4,
-    (4.0, 5.0): 1,
-    (5.0, 6.0): 6,
-    (6.0, 100.0): 14
-}
+# montyly_income_score = {
+#     (0, 4.0): -4,
+#     (4.0, 5.0): 1,
+#     (5.0, 6.0): 6,
+#     (6.0, 100.0): 14
+# }
 
 # This dictionary contains the scores for different products.
-producter_new_scores = {
-    'p1': 7,
-    'p2': 3,
-    'p3': 2,
-    'p4': 0,
-    'p5': -4
-}
+# producter_new_scores = {
+#     'p1': 7,
+#     'p2': 3,
+#     'p3': 2,
+#     'p4': 0,
+#     'p5': -4
+# }
 
 # This dictionary contains the scores for different education levels.
 education_scores = {
@@ -108,7 +86,7 @@ home_ownership_scores = {
 
 # This dictionary contains the scores for different length of stays.
 length_stay_scores = {
-    'It6months': -4,
+    '1t6months': -4,
     '6m to 2year': -3,
     '2 years to 5 years': 2,
     '5years+': 4
@@ -122,9 +100,7 @@ phone_type_scores = {
     'none': -3
 }
 
-
-def calculate_final_score(gender, age, has_phone, marital_status, has_npwp, income_todebt_ratio, 
-                          producter_new, education, work_year, province, num_dependents, home_ownership, length_stay, phone_type):
+def calculate_final_score(id_card_number, has_phone, marital_status, education, work_year, province, num_dependents, home_ownership, length_stay, phone_type):
     """
     Calculates the final score for a customer based on their gender, age, phone, marital status, and NPWP.
 
@@ -148,6 +124,11 @@ def calculate_final_score(gender, age, has_phone, marital_status, has_npwp, inco
     float: The final score for the customer.
     """
     # Calculate age score
+    
+    parsed_id_card = get_id_info(id_card_number)
+    age = parsed_id_card[-1]
+    gender = parsed_id_card[3]  
+    
     age_score = None
     for age_range, score in age_scores.items():
         if age_range[0] <= age <= age_range[1]:
@@ -172,24 +153,24 @@ def calculate_final_score(gender, age, has_phone, marital_status, has_npwp, inco
     if marital_status_score is None:
         raise ValueError(f'Invalid marital_status_scores: {marital_status}')
 
-    # Calculate has_npwp score
-    has_npwp_score = has_npwp_scores.get(has_npwp.lower(), None)
-    if has_npwp_score is None:
-        raise ValueError(f'Invalid has_npwp_scores: {has_npwp}')
+    # # Calculate has_npwp score
+    # has_npwp_score = has_npwp_scores.get(has_npwp.lower(), None)
+    # if has_npwp_score is None:
+    #     raise ValueError(f'Invalid has_npwp_scores: {has_npwp}')
 
-    # Calculate income_todebt_ratio score
-    income_todebt_ratio_score = None
-    for income_range, score in income_todebt_ratio_scores.items():
-        if income_range[0] <= income_todebt_ratio <= income_range[1]:
-            income_todebt_ratio_score = score
-            break
-    if income_todebt_ratio_score is None:
-        raise ValueError(f'Invalid income_todebt_ratio: {income_todebt_ratio}')
+    # # Calculate income_todebt_ratio score
+    # income_todebt_ratio_score = None
+    # for income_range, score in income_todebt_ratio_scores.items():
+    #     if income_range[0] <= income_todebt_ratio <= income_range[1]:
+    #         income_todebt_ratio_score = score
+    #         break
+    # if income_todebt_ratio_score is None:
+    #     raise ValueError(f'Invalid income_todebt_ratio: {income_todebt_ratio}')
 
-    # Calculate producter_new score
-    producter_new_score = producter_new_scores.get(producter_new.lower(), None)
-    if producter_new_score is None:
-        raise ValueError(f'Invalid producter_new_score: {producter_new}')
+    # # Calculate producter_new score
+    # producter_new_score = producter_new_scores.get(producter_new.lower(), None)
+    # if producter_new_score is None:
+    #     raise ValueError(f'Invalid producter_new_score: {producter_new}')
 
     # Calculate education score
     education_score = education_scores.get(education.lower(), None)
@@ -238,11 +219,12 @@ def calculate_final_score(gender, age, has_phone, marital_status, has_npwp, inco
     # Calculate total score
     base_score = 621
     total_score = sum([
-        base_score, age_score, gender_score, has_phone_score, marital_status_score,
-        has_npwp_score, income_todebt_ratio_score, producter_new_score, education_score,
+        base_score, age_score, gender_score, has_phone_score, marital_status_score, education_score,
         work_year_score, province_score, num_dependents_score, home_ownership_score,
         length_stay_score, phone_type_score
     ])
 
     return total_score
 
+final_score = calculate_final_score('3204112001000001', 'yes', 'married', 'e1', 1.0, 'group1', 0, 'selfown', '1t6months', 'home&office')    
+print(final_score)
