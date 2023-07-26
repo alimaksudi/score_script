@@ -1,3 +1,5 @@
+from datetime import datetime
+
 province_list = {
     '11': 'Aceh',
     '12': 'Sumatera Utara',
@@ -51,13 +53,14 @@ def parse_id_card(x: str):
         - The district code (6 characters)
         - The gender ('MALE' or 'FEMALE')
         - The birth year (4 digits)
+        - The age (in years)
 
     If the input is not 16 characters long, returns a list of None values.
     """
     # implementation of the function
     
     if len(x) != 16:
-        return [None, None, None, None, None, None]
+        return [None, None, None, None, None, None, None]
 
     id_province = x[:2]
     id_city = x[:4]
@@ -73,9 +76,12 @@ def parse_id_card(x: str):
     else:
         id_birthyear = int('19' + x[-6:-4])
 
+    current_year = datetime.now().year
+    id_age = current_year - id_birthyear
     province_name = province_list.get(id_province)
 
-    return [province_name, id_city, id_district, id_gender, id_birthyear]
+    return [province_name, id_city, id_district, id_gender, id_birthyear, id_age]
+
 
 if __name__ == '__main__':
     id_card_number = input("Enter an Indonesian ID card number: ")
