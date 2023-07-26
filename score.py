@@ -1,3 +1,21 @@
+def parse_nik(x):
+    if len(x)==16:
+        nik_province = x[:2]
+        nik_city = x[:4]
+        nik_district = x[:6]
+        if int(x[6:8])>31:
+            nik_gender = 'FEMALE'
+        else:
+            nik_gender = 'MALE'
+        
+        if int(x[-6])==0 or int(x[-6])==1:
+            nik_birthyear = int('20'+x[-6:-4])
+        else:
+            nik_birthyear = int('19'+x[-6:-4])
+        return [nik_province,nik_city,nik_district,nik_gender,nik_birthyear]
+    else:
+        return [None,None,None,None,None]
+
 # This dictionary contains the scores for different genders.
 gender_scores = {
     'male': -1,
@@ -24,7 +42,7 @@ marital_status_scores = {
     'married': -2,
     'single': 7,
     'divorced': 4,
-    'unknown': -5 
+    'unknown': -5
 }
 
 # This dictionary contains the scores for whether the customer has NPWP or not.
@@ -104,7 +122,9 @@ phone_type_scores = {
     'none': -3
 }
 
-def calculate_final_score(gender, age, has_phone, marital_status, has_npwp, income_todebt_ratio, producter_new, education, work_year, province, num_dependents, home_ownership, length_stay, phone_type):
+
+def calculate_final_score(gender, age, has_phone, marital_status, has_npwp, income_todebt_ratio, 
+                          producter_new, education, work_year, province, num_dependents, home_ownership, length_stay, phone_type):
     """
     Calculates the final score for a customer based on their gender, age, phone, marital status, and NPWP.
 
@@ -147,7 +167,8 @@ def calculate_final_score(gender, age, has_phone, marital_status, has_npwp, inco
         raise ValueError(f'Invalid has_phone_scores: {has_phone}')
 
     # Calculate marital_status score
-    marital_status_score = marital_status_scores.get(marital_status.lower(), None)
+    marital_status_score = marital_status_scores.get(
+        marital_status.lower(), None)
     if marital_status_score is None:
         raise ValueError(f'Invalid marital_status_scores: {marital_status}')
 
@@ -199,7 +220,8 @@ def calculate_final_score(gender, age, has_phone, marital_status, has_npwp, inco
         raise ValueError(f'Invalid num_dependents: {num_dependents}')
 
     # Calculate home_ownership score
-    home_ownership_score = home_ownership_scores.get(home_ownership.lower(), None)
+    home_ownership_score = home_ownership_scores.get(
+        home_ownership.lower(), None)
     if home_ownership_score is None:
         raise ValueError(f'Invalid home_ownership_score: {home_ownership}')
 
