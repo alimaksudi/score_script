@@ -16,10 +16,10 @@ age_scores = {
 }
 
 # This dictionary contains the scores for whether the customer has a phone or not.
-has_phone_scores = {
-    'yes': 6,
-    'no': 8
-}
+# has_phone_scores = {
+#     'yes': 6,
+#     'no': 8
+# }
 
 # This dictionary contains the scores for different marital statuses.
 marital_status_scores = {
