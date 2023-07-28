@@ -48,9 +48,13 @@ marital_status_scores = {
 
 # This dictionary contains the scores for different education levels.
 education_scores = {
-    'e1': 2,
-    'e2': -1,
-    'e3': -8
+    'S2': 2,
+    'S3':2,
+    'Specialist': 2,
+    'S1': -1,
+    'SMA': -1,
+    'SMP': -8,
+    'Other': -8
 }
 
 # This dictionary contains the scores for different work years.
@@ -226,5 +230,6 @@ def calculate_final_score(id_card_number, has_phone, marital_status, education, 
 
     return total_score
 
-final_score = calculate_final_score('3204112001000001', 'yes', 'married', 'e1', 1.0, 'group1', 0, 'selfown', '1t6months', 'home&office')    
-print(final_score)
+# final_score = calculate_final_score('3204112001000001', 'yes', 'married', 'e1', 1.0, 'group1', 0, 'selfown', '1t6months', 'home&office')    
+# print(final_score)
+
