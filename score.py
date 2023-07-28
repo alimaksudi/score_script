@@ -48,13 +48,13 @@ marital_status_scores = {
 
 # This dictionary contains the scores for different education levels.
 education_scores = {
-    'S2': 2,
-    'S3':2,
-    'Specialist': 2,
-    'S1': -1,
-    'SMA': -1,
-    'SMP': -8,
-    'Other': -8
+    's2': 2,
+    's3':2,
+    'specialis': 2,
+    's1': -1,
+    'sma': -1,
+    'smp': -8,
+    'other': -8
 }
 
 # This dictionary contains the scores for different work years.
