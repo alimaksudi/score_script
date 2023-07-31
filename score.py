@@ -147,9 +147,9 @@ def calculate_final_score(id_card_number, has_phone, marital_status, education, 
         raise ValueError(f'Invalid gender_scores: {gender}')
 
     # Calculate has_phone score
-    has_phone_score = has_phone_scores.get(has_phone.lower(), None)
-    if has_phone_score is None:
-        raise ValueError(f'Invalid has_phone_scores: {has_phone}')
+    # has_phone_score = has_phone_scores.get(has_phone.lower(), None)
+    # if has_phone_score is None:
+    #     raise ValueError(f'Invalid has_phone_scores: {has_phone}')
 
     # Calculate marital_status score
     marital_status_score = marital_status_scores.get(
