@@ -98,7 +98,7 @@ length_stay_scores = {
 
 # This dictionary contains the scores for different phone types.
 phone_type_scores = {
-    'home&office': 4,
+    'homeoffice': 4,
     'office': -2,
     'home': -2,
     'none': -3
