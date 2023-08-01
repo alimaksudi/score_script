@@ -223,7 +223,7 @@ def calculate_final_score(id_card_number, has_phone, marital_status, education, 
     # Calculate total score
     base_score = 621
     total_score = sum([
-        base_score, age_score, gender_score, has_phone_score, marital_status_score, education_score,
+        base_score, age_score, gender_score, marital_status_score, education_score,
         work_year_score, province_score, num_dependents_score, home_ownership_score,
         length_stay_score, phone_type_score
     ])
