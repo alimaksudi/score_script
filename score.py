@@ -15,11 +15,6 @@ age_scores = {
     (45, 1000): 3
 }
 
-# This dictionary contains the scores for whether the customer has a phone or not.
-# has_phone_scores = {
-#     'yes': 6,
-#     'no': 8
-# }
 
 # This dictionary contains the scores for different marital statuses.
 marital_status_scores = {
@@ -28,23 +23,6 @@ marital_status_scores = {
     'divorced': 4,
     'unknown': -5
 }
-
-# This dictionary contains the scores for different income to debt ratios.
-# montyly_income_score = {
-#     (0, 4.0): -4,
-#     (4.0, 5.0): 1,
-#     (5.0, 6.0): 6,
-#     (6.0, 100.0): 14
-# }
-
-# This dictionary contains the scores for different products.
-# producter_new_scores = {
-#     'p1': 7,
-#     'p2': 3,
-#     'p3': 2,
-#     'p4': 0,
-#     'p5': -4
-# }
 
 # This dictionary contains the scores for different education levels.
 education_scores = {
@@ -103,8 +81,17 @@ phone_type_scores = {
     'home': -2,
     'none': -3
 }
+# This dictionary contains the score categories for credit scores, along with their corresponding score ranges.
+score_categories = {
+    (0, 560): 'Buruk',
+    (560, 579): 'Tidak Baik',
+    (580, 599): 'Kurang Baik',
+    (600, 619): 'Baik',
+    (620, 719): 'Sangat Baik',
+    (720, 1000): 'Luar Biasa'
+}
 
-def calculate_final_score(id_card_number: str, marital_status: str, education: str, work_year: float, num_dependents: int, home_ownership: str, length_stay: str, phone_type: str) -> float:
+def calculate_final_score(id_card_number: str, marital_status: str, education: str, work_year: float, num_dependents: int, home_ownership: str, length_stay: str, phone_type: str) -> dict:
     """
     Calculates the final score for a customer based on their gender, age, phone, marital status, and NPWP.
 
@@ -113,14 +100,13 @@ def calculate_final_score(id_card_number: str, marital_status: str, education: s
     marital_status (str): The marital status of the customer.
     education (str): The education level of the customer.
     work_year (float): The work year of the customer.
-    province (str): The province of the customer.
     num_dependents (int): The number of dependents of the customer.
     home_ownership (str): The home ownership status of the customer.
     length_stay (str): The length of stay of the customer.
     phone_type (str): The type of phone of the customer.
 
     Returns:
-    float: The final score for the customer.
+    dict: A dictionary containing the final score and score category for the customer.
     """
     # Calculate age score
     parsed_id_card = get_id_info(id_card_number)
@@ -128,78 +114,69 @@ def calculate_final_score(id_card_number: str, marital_status: str, education: s
     age = parsed_id_card['age']
     gender = parsed_id_card['gender']
     
-    age_score = None
-    for age_range, score in age_scores.items():
-        if age_range[0] <= age <= age_range[1]:
-            age_score = score
-            break
+    age_score = next((score for age_range, score in age_scores.items() if age_range[0] <= age <= age_range[1]), None)
     if age_score is None:
         raise ValueError(f'Invalid age: {age}')
 
     # Calculate gender score
-    gender_score = gender_scores.get(gender.lower(), None)
+    gender_score = gender_scores.get(gender.lower())
     if gender_score is None:
         raise ValueError(f'Invalid gender_scores: {gender}')
 
     # Calculate marital_status score
-    marital_status_score = marital_status_scores.get(
-        marital_status.lower(), None)
+    marital_status_score = marital_status_scores.get(marital_status.lower())
     if marital_status_score is None:
         raise ValueError(f'Invalid marital_status_scores: {marital_status}')
 
     # Calculate education score
-    education_score = education_scores.get(education.lower(), None)
+    education_score = education_scores.get(education.lower())
     if education_score is None:
         raise ValueError(f'Invalid education_score: {education}')
 
     # Calculate work_year score
-    work_year_score = None
-    for work_year_range, score in work_year_scores.items():
-        if work_year_range[0] <= work_year <= work_year_range[1]:
-            work_year_score = score
-            break
+    work_year_score = next((score for work_year_range, score in work_year_scores.items() if work_year_range[0] <= work_year <= work_year_range[1]), None)
     if work_year_score is None:
         raise ValueError(f'Invalid work_year: {work_year}')
 
     # Calculate province score
-    province_score = province_scores.get(province_group.lower(), None)
+    province_score = province_scores.get(province_group.lower())
     if province_score is None:
         raise ValueError(f'Invalid province_score: {province_group}')
 
     # Calculate num_dependents score
-    num_dependents_score = None
-    for num_dependents_range, score in num_dependents_scores.items():
-        if num_dependents_range[0] <= num_dependents <= num_dependents_range[1]:
-            num_dependents_score = score
-            break
+    num_dependents_score = next((score for num_dependents_range, score in num_dependents_scores.items() if num_dependents_range[0] <= num_dependents <= num_dependents_range[1]), None)
     if num_dependents_score is None:
         raise ValueError(f'Invalid num_dependents: {num_dependents}')
 
     # Calculate home_ownership score
-    home_ownership_score = home_ownership_scores.get(
-        home_ownership.lower(), None)
+    home_ownership_score = home_ownership_scores.get(home_ownership.lower())
     if home_ownership_score is None:
         raise ValueError(f'Invalid home_ownership_score: {home_ownership}')
 
     # Calculate length_stay score
-    length_stay_score = length_stay_scores.get(length_stay.lower(), None)
+    length_stay_score = length_stay_scores.get(length_stay.lower())
     if length_stay_score is None:
         raise ValueError(f'Invalid length_stay_score: {length_stay}')
 
     # Calculate phone_type score
-    phone_type_score = phone_type_scores.get(phone_type.lower(), None)
+    phone_type_score = phone_type_scores.get(phone_type.lower())
     if phone_type_score is None:
         raise ValueError(f'Invalid phone_type_score: {phone_type}')
-
+    
     # Calculate total score
     base_score = 621
-    total_score = sum({
+    total_score = sum([
         age_score, gender_score, marital_status_score, education_score,
         work_year_score, province_score, num_dependents_score, home_ownership_score,
         length_stay_score, phone_type_score
-    })
+    ])
+    
+    final_score = base_score + total_score
+    
+    # Define the score categories
+    score_category = next((score_categorie for score_range, score_categorie in score_categories.items() if score_range[0] <= final_score <= score_range[1]), None)
 
-    return base_score + total_score
+    return {'final_score': final_score, 'score_category': score_category}
 
-final_score = calculate_final_score('3204112001000001', 'married', 'sma', 1.0, 0, 'selfown', '1t6months', 'home&office')    
+final_score = calculate_final_score('3204112001000001', 'married', 'sma', 1.0, 0, 'selfown', '1t6months', 'homeoffice')    
 print(final_score)
